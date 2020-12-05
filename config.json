@@ -1,0 +1,7 @@
+{
+  "addr": ":8200",
+  "smb_config_path": "/etc/samba/smb.conf",
+  "start_script": "sudo service smbd start",
+  "restart_script": "sudo service smbd restart",
+  "stop_script": "sudo service smbd stop"
+}
