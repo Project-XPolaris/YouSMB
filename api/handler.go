@@ -41,7 +41,7 @@ var addFolderConfig haruka.RequestHandler = func(context *haruka.Context) {
 		AbortErrorWithStatus(err, context, http.StatusBadRequest)
 		return
 	}
-	context.JSON(map[string]interface{}{
+	context.JSON(haruka.JSON{
 		"result": "success",
 	})
 }
@@ -54,7 +54,7 @@ var removeFolderConfig haruka.RequestHandler = func(context *haruka.Context) {
 		AbortErrorWithStatus(err, context, http.StatusBadRequest)
 		return
 	}
-	context.JSON(map[string]interface{}{
+	context.JSON(haruka.JSON{
 		"result": "success",
 	})
 }
@@ -72,7 +72,33 @@ var updateFolderConfig haruka.RequestHandler = func(context *haruka.Context) {
 		AbortErrorWithStatus(err, context, http.StatusBadRequest)
 		return
 	}
-	context.JSON(map[string]interface{}{
+	context.JSON(haruka.JSON{
 		"result": "success",
 	})
+}
+
+type AddUserRequestBody struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+var addUserHandler haruka.RequestHandler = func(context *haruka.Context) {
+	var requestBody AddUserRequestBody
+	err := context.ParseJson(&requestBody)
+	if err != nil {
+		AbortErrorWithStatus(err, context, http.StatusBadRequest)
+		return
+	}
+	err = smb.DefaultUserManager.Create(requestBody.Username, requestBody.Password)
+	if err != nil {
+		AbortErrorWithStatus(err, context, http.StatusBadRequest)
+		return
+	}
+	context.JSON(haruka.JSON{
+		"result": "success",
+	})
+}
+
+var removeUser haruka.RequestHandler = func(context *haruka.Context) {
+
 }
