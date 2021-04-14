@@ -35,6 +35,7 @@ func (m *UserManager) Create(username string, password string) error {
 }
 
 func (m *UserManager) LoadUser() error {
+	m.Users = []*User{}
 	cmd := exec.Command("pdbedit", "-L")
 	output, err := cmd.Output()
 	if err != nil {

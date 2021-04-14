@@ -99,6 +99,32 @@ var addUserHandler haruka.RequestHandler = func(context *haruka.Context) {
 	})
 }
 
-var removeUser haruka.RequestHandler = func(context *haruka.Context) {
+var getUserList haruka.RequestHandler = func(context *haruka.Context) {
+	userList := make([]SMBUserTemplate, 0)
+	for _, user := range smb.DefaultUserManager.Users {
+		template := SMBUserTemplate{Username: user.Username}
+		userList = append(userList, template)
+	}
+	context.JSON(haruka.JSON{
+		"users": userList,
+	})
+}
 
+var removeUser haruka.RequestHandler = func(context *haruka.Context) {
+	username := context.GetQueryString("username")
+	err := smb.DefaultUserManager.RemoveUser(username)
+	if err != nil {
+		AbortErrorWithStatus(err, context, http.StatusInternalServerError)
+		return
+	}
+	context.JSON(haruka.JSON{
+		"result": "success",
+	})
+}
+
+var infoHandler haruka.RequestHandler = func(context *haruka.Context) {
+	context.JSON(haruka.JSON{
+		"name":   "YouSMB Service",
+		"status": "running",
+	})
 }

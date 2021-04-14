@@ -35,6 +35,10 @@ func Program() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+	err = smb.DefaultUserManager.LoadUser()
+	if err != nil {
+		log.Fatalln(err)
+	}
 	api.RunWebApi(application.Config.Addr)
 }
 

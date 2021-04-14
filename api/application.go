@@ -13,6 +13,9 @@ func RunWebApi(addr string) {
 	e.Router.AddHandler("/folders/remove", removeFolderConfig)
 	e.Router.AddHandler("/folders/update", updateFolderConfig)
 	e.Router.POST("/users", addUserHandler)
+	e.Router.GET("/users", getUserList)
+	e.Router.DELETE("/users", removeUser)
+	e.Router.GET("/info", infoHandler)
 	e.UseCors(cors.AllowAll())
 	e.RunAndListen(addr)
 }
