@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/jessevdk/go-flags"
 	srv "github.com/kardianos/service"
 	"github.com/sirupsen/logrus"
+	"github.com/urfave/cli/v2"
 	"log"
 	"os"
 	"path/filepath"
@@ -45,14 +45,45 @@ func Program() {
 type program struct{}
 
 func (p *program) Start(s srv.Service) error {
-	// Start should not block. Do the actual work async.
 	go Program()
 	return nil
 }
 
 func (p *program) Stop(s srv.Service) error {
-	// Stop should not block. Return with a few seconds.
 	return nil
+}
+func StartService() {
+	prg := &program{}
+	s, err := srv.New(prg, svcConfig)
+	if err != nil {
+		logrus.Fatal(err)
+	}
+	err = s.Start()
+	if err != nil {
+		logrus.Fatal(err)
+	}
+}
+func StopService() {
+	prg := &program{}
+	s, err := srv.New(prg, svcConfig)
+	if err != nil {
+		logrus.Fatal(err)
+	}
+	err = s.Stop()
+	if err != nil {
+		logrus.Fatal(err)
+	}
+}
+func RestartService() {
+	prg := &program{}
+	s, err := srv.New(prg, svcConfig)
+	if err != nil {
+		logrus.Fatal(err)
+	}
+	err = s.Restart()
+	if err != nil {
+		logrus.Fatal(err)
+	}
 }
 
 func InstallAsService() {
@@ -84,27 +115,77 @@ func UnInstall() {
 	logrus.Info("successful uninstall service")
 }
 
-var opts struct {
-	Install   bool `short:"i" long:"install" description:"Show verbose debug information"`
-	Uninstall bool `short:"u" long:"uninstall" description:"Show verbose debug information"`
-}
+func RunApp() {
+	app := &cli.App{
+		Flags: []cli.Flag{},
+		Commands: []*cli.Command{
+			&cli.Command{
+				Name:  "service",
+				Usage: "service manager",
+				Subcommands: []*cli.Command{
+					{
+						Name:  "install",
+						Usage: "install service",
+						Action: func(context *cli.Context) error {
+							InstallAsService()
+							return nil
+						},
+					},
+					{
+						Name:  "uninstall",
+						Usage: "uninstall service",
+						Action: func(context *cli.Context) error {
+							UnInstall()
+							return nil
+						},
+					},
+					{
+						Name:  "start",
+						Usage: "start service",
+						Action: func(context *cli.Context) error {
+							StartService()
+							return nil
+						},
+					},
+					{
+						Name:  "stop",
+						Usage: "stop service",
+						Action: func(context *cli.Context) error {
+							StopService()
+							return nil
+						},
+					},
+					{
+						Name:  "restart",
+						Usage: "restart service",
+						Action: func(context *cli.Context) error {
+							RestartService()
+							return nil
+						},
+					},
+				},
+				Description: "YouSMB service controller",
+			},
+			{
+				Name:  "run",
+				Usage: "run app",
+				Action: func(context *cli.Context) error {
+					Program()
+					return nil
+				},
+			},
+		},
+	}
 
+	err := app.Run(os.Args)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
 func main() {
-	_, err := flags.ParseArgs(&opts, os.Args)
+	err := initService()
 	if err != nil {
 		logrus.Fatal(err)
 	}
-	err = initService()
-	if err != nil {
-		logrus.Fatal(err)
-	}
-	if opts.Install {
-		InstallAsService()
-		return
-	}
-	if opts.Uninstall {
-		UnInstall()
-		return
-	}
-	Program()
+	RunApp()
 }
