@@ -1,3 +1,6 @@
 .idea/
 *.conf
 *.exe
+/pack-output
+local_*_test.go
+main

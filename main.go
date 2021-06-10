@@ -23,6 +23,7 @@ func initService() error {
 		Name:             "YouSMBCoreService",
 		DisplayName:      "YouSMB Core Service",
 		WorkingDirectory: workPath,
+		Arguments:        []string{"run"},
 	}
 	return nil
 }
