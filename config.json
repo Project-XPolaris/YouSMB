@@ -1,5 +1,6 @@
 {
   "addr": ":8200",
+  "rpc": "localhost:50057",
   "smb_config_path": "/etc/samba/smb.conf",
   "start_script": "sudo service smbd start",
   "restart_script": "sudo service smbd restart",

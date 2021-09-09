@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"yousmb/api"
 	"yousmb/application"
+	"yousmb/rpc"
 	"yousmb/smb"
 )
 
@@ -40,6 +41,8 @@ func Program() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+	smb.InitDefaultMonitor()
+	go rpc.DefaultRPCServer.Run()
 	api.RunWebApi(application.Config.Addr)
 }
 

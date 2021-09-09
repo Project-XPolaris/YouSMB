@@ -2,11 +2,20 @@ package smb
 
 import (
 	"errors"
-	"fmt"
 	"os/exec"
 	"strings"
 	"time"
 )
+
+var DefaultMonitor *StatusMonitor
+
+func InitDefaultMonitor() {
+	DefaultMonitor = &StatusMonitor{
+		Process:      []*StatusProcess{},
+		StatusShares: []*StatusShares{},
+	}
+	DefaultMonitor.Run()
+}
 
 type StatusMonitor struct {
 	Process      []*StatusProcess
@@ -37,7 +46,6 @@ func (s *StatusMonitor) getData(arg string) ([]map[string]string, error) {
 	lines := strings.Split(output, "\n")
 	dividerIdx := -1
 	for idx, line := range lines {
-		fmt.Println(line)
 		if strings.HasPrefix(line, "-") {
 			dividerIdx = idx
 		}

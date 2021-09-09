@@ -10,6 +10,7 @@ var Config AppConfig
 
 type AppConfig struct {
 	Addr          string `json:"addr"`
+	RPC           string `json:"rpc"`
 	SmbConfigPath string `json:"smb_config_path"`
 	RestartScript string `json:"restart_script"`
 	StartScript   string `json:"start_script"`
